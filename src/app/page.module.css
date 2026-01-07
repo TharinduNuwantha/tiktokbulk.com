@@ -1,0 +1,165 @@
+.main {
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.sectionTitle {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+/* Features */
+.features {
+    padding: 100px 0;
+}
+
+.featureGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 32px;
+}
+
+.featureItem {
+    background: var(--card);
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    transition: transform 0.3s ease;
+}
+
+.featureItem:hover {
+    transform: translateY(-10px);
+}
+
+.featureIcon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.featureItem h3 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+}
+
+.featureItem p {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* Guide */
+.guide {
+    padding: 120px 0;
+    background: var(--glass);
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 48px;
+    margin-top: 60px;
+}
+
+.step {
+    position: relative;
+    padding: 32px;
+}
+
+.stepNum {
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--primary);
+    opacity: 0.1;
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    z-index: 0;
+}
+
+.step h4 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.step p {
+    color: var(--muted);
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+}
+
+/* FAQ */
+.faq {
+    padding: 120px 0;
+}
+
+.faqList {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.faqItem {
+    padding: 32px;
+    background: var(--card);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+}
+
+.faqItem h4 {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+}
+
+.faqItem p {
+    color: var(--muted);
+}
+
+/* Footer */
+.footer {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+    background: var(--background);
+}
+
+.footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footerLinks {
+    display: flex;
+    gap: 24px;
+}
+
+.footerLinks a {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.footerLinks a:hover {
+    color: var(--foreground);
+}
+
+@media (max-width: 768px) {
+    .footer .container {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+    }
+}
