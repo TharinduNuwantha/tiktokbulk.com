@@ -8,84 +8,75 @@ export interface TikTokVideoInfo {
 }
 
 export async function getVideoInfo(url: string): Promise<TikTokVideoInfo> {
-    // 1. Normalize and handle short URLs
-    let targetUrl = url.trim();
-    if (targetUrl.includes('vm.tiktok.com') || targetUrl.includes('vt.tiktok.com')) {
-        try {
-            const response = await fetch(targetUrl, {
-                method: 'HEAD',
-                redirect: 'follow'
-            });
-            targetUrl = response.url;
-        } catch (e) {
-            // Keep original and try to parse
-        }
-    }
+    const targetUrl = url.trim();
 
-    // 2. Extract Video ID
-    const idMatch = targetUrl.match(/\/video\/(\d+)/) || targetUrl.match(/v=(\d+)/) || targetUrl.match(/\/v\/(\d+)/);
-    if (!idMatch) {
-        throw new Error('Could not find video ID. Please check the URL.');
-    }
-    const videoId = idMatch[1];
-
-    // 3. Fetch from TikTok API with robust headers
-    // Using a more reliable endpoint and adding common headers to avoid blocks
-    const apiUrl = `https://api16-normal-c-useast1a.tiktokv.com/aweme/v1/feed/?aweme_id=${videoId}`;
-
+    // Provider 1: TikWM (Very stable and high success rate)
     try {
-        const apiRes = await fetch(apiUrl, {
+        const response = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(targetUrl)}`, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1',
                 'Accept': 'application/json',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache'
-            },
-            next: { revalidate: 0 } // Disable caching for fresh results
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
         });
 
-        const text = await apiRes.text();
-
-        if (!text) {
-            throw new Error('Received empty response from TikTok. Please try again later.');
+        if (response.ok) {
+            const data = await response.json();
+            if (data.code === 0 && data.data) {
+                const item = data.data;
+                return {
+                    id: item.id || Date.now().toString(),
+                    title: item.title || 'TikTok Video',
+                    thumbnail: item.cover || '',
+                    author: item.author?.nickname || 'Creator',
+                    videoUrl: item.play || item.wmplay || '',
+                    musicUrl: item.music || ''
+                };
+            }
         }
-
-        let data;
-        try {
-            data = JSON.parse(text);
-        } catch (e) {
-            throw new Error('TikTok API returned invalid response. It may be restricted in your region.');
-        }
-
-        const aweme = data.aweme_list?.find((item: any) => item.aweme_id === videoId);
-
-        if (!aweme) {
-            throw new Error('Video not found. It might be private or deleted.');
-        }
-
-        // The 'play_addr' contains the video URLs. 
-        // We look for 'url_list' which has the direct stream.
-        const videoUrl = aweme.video?.play_addr?.url_list[0];
-        const musicUrl = aweme.music?.play_url?.url_list[0];
-        const thumbnail = aweme.video?.cover?.url_list[0];
-        const title = aweme.desc || 'TikTok Video';
-        const author = aweme.author?.nickname || 'Creator';
-
-        if (!videoUrl) {
-            throw new Error('Watermark-free video source not found for this video.');
-        }
-
-        return {
-            id: videoId,
-            title,
-            thumbnail,
-            author,
-            videoUrl,
-            musicUrl
-        };
-    } catch (error: any) {
-        console.error('TikTok Lib Error:', error);
-        throw error;
+    } catch (e) {
+        console.error('TikWM Provider failed:', e);
     }
+
+    // Provider 2: TiklyDown (Fallback)
+    try {
+        const response = await fetch(`https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(targetUrl)}`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.status === true && data.result) {
+                const result = data.result;
+                return {
+                    id: result.id || Date.now().toString(),
+                    title: result.desc || result.title || 'TikTok Video',
+                    thumbnail: result.video?.cover || '',
+                    author: result.author?.nickname || 'Creator',
+                    videoUrl: result.video?.noWatermark || result.video?.watermark || '',
+                    musicUrl: result.music?.play_url || ''
+                };
+            }
+        }
+    } catch (e) {
+        console.error('TiklyDown Provider failed:', e);
+    }
+
+    // Provider 3: Dandi API (Last resort)
+    try {
+        const response = await fetch(`https://api.dandi.me/tiktok/v1?url=${encodeURIComponent(targetUrl)}`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.video) {
+                return {
+                    id: data.id || Date.now().toString(),
+                    title: data.description || 'TikTok Video',
+                    thumbnail: data.thumbnail || '',
+                    author: data.author || 'Creator',
+                    videoUrl: data.video,
+                    musicUrl: data.audio
+                };
+            }
+        }
+    } catch (e) {
+        console.error('Dandi Provider failed:', e);
+    }
+
+    throw new Error('All download providers failed to fetch this video. It may be private, age-restricted, or TikTok is blocking our requests. Please try again later.');
 }
