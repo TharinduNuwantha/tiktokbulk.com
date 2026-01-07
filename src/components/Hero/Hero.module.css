@@ -86,7 +86,9 @@
     border-radius: 100px;
     border: 2px solid var(--border);
     transition: all 0.3s;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 2;
 }
 
 .inputContainer:focus-within {
@@ -237,6 +239,7 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    line-clamp: 2;
 }
 
 .author {
@@ -269,6 +272,33 @@
 }
 
 @media (max-width: 600px) {
+    .inputContainer {
+        border-radius: 20px;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .inputIcon {
+        display: none;
+    }
+
+    .input {
+        width: 100%;
+        text-align: center;
+        padding: 8px 0;
+    }
+
+    .submitBtn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .bulkBtnInline {
+        width: 100%;
+        justify-content: center;
+    }
+
     .resultCard {
         flex-direction: column;
         align-items: center;

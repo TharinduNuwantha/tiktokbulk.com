@@ -73,12 +73,19 @@
 
 .input {
     flex: 1;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--glass);
     border: 1px solid var(--border);
-    padding: 12px 16px;
+    padding: 14px 20px;
     border-radius: 12px;
     color: var(--foreground);
     outline: none;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.input:focus {
+    border-color: var(--secondary);
+    background: rgba(37, 244, 238, 0.05);
 }
 
 .removeBtn {
@@ -97,6 +104,18 @@
     justify-content: space-between;
     margin-bottom: 32px;
     gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .actions {
+        flex-direction: column;
+    }
+
+    .addBtn,
+    .startBtn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 .addBtn {

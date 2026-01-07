@@ -87,7 +87,7 @@ export default function Hero() {
                             </button>
                         </div>
                         <div className={styles.formActions}>
-                            <a href="#bulk" className={styles.bulkBtnInline}>
+                            <a href="#bulk" className={styles.bulkBtnInline} style={{ marginTop: '1rem' }}>
                                 <Layers size={18} />
                                 <span>Bulk Download</span>
                             </a>
