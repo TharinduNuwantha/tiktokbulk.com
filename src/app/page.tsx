@@ -61,7 +61,7 @@ export default function Home() {
                         <div className={styles.step}>
                             <span className={styles.stepNum}>02</span>
                             <h4>Paste URL</h4>
-                            <p>Paste the link into the TikFlow search box above.</p>
+                            <p>Paste the link into the TikTokBulk search box above.</p>
                         </div>
                         <div className={styles.step}>
                             <span className={styles.stepNum}>03</span>
@@ -78,12 +78,12 @@ export default function Home() {
                     <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
                     <div className={styles.faqList}>
                         <div className={styles.faqItem}>
-                            <h4>Is it safe to use TikFlow?</h4>
-                            <p>Yes, TikFlow is completely secure and doesn't store your personal data or downloaded videos.</p>
+                            <h4>Is it safe to use TikTokBulk?</h4>
+                            <p>Yes, TikTokBulk is completely secure and doesn't store your personal data or downloaded videos.</p>
                         </div>
                         <div className={styles.faqItem}>
                             <h4>Does it work on iPhone?</h4>
-                            <p>Absolutely! You can use TikFlow on iOS via Safari or any other browser.</p>
+                            <p>Absolutely! You can use TikTokBulk on iOS via Safari or any other browser.</p>
                         </div>
                         <div className={styles.faqItem}>
                             <h4>Can I bulk download?</h4>
@@ -95,7 +95,7 @@ export default function Home() {
 
             <footer className={styles.footer}>
                 <div className={styles.container}>
-                    <p>© 2026 TikFlow Downloader. All rights reserved.</p>
+                    <p>© 2026 TikTokBulk Downloader. All rights reserved.</p>
                     <div className={styles.footerLinks}>
                         <a href="#">Privacy Policy</a>
                         <a href="#">Terms of Service</a>

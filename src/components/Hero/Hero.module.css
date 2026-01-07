@@ -49,7 +49,33 @@
 .inputWrapper {
     width: 100%;
     max-width: 700px;
-    margin: 0 auto 32px;
+    margin: 0 auto 12px;
+}
+
+.formActions {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+.bulkBtnInline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--secondary);
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 50px;
+    background: rgba(37, 244, 238, 0.05);
+    border: 1px solid rgba(37, 244, 238, 0.2);
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.bulkBtnInline:hover {
+    background: rgba(37, 244, 238, 0.1);
+    transform: translateY(-2px);
+    border-color: rgba(37, 244, 238, 0.4);
 }
 
 .inputContainer {

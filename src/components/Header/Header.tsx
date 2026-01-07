@@ -12,7 +12,7 @@ export default function Header() {
                     <div className={styles.iconBox}>
                         <Download size={24} color="#FE2C55" />
                     </div>
-                    <span className={styles.logoText}>Tik<span className="title-gradient">Flow</span></span>
+                    <span className={styles.logoText}>TikTok<span className="title-gradient">Bulk.com</span></span>
                 </div>
                 <nav className={styles.nav}>
                     <a href="#single" className={styles.navLink}>Single Download</a>

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from './Hero.module.css';
-import { Link2, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { Link2, ArrowRight, Loader2, CheckCircle2, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Hero() {
@@ -64,8 +64,7 @@ export default function Hero() {
                 >
                     <span className={styles.badge}>🚀 Fastest TikTok Downloader</span>
                     <h1 className={styles.title}>
-                        Download TikTok <br />
-                        <span className="title-gradient">Without Watermark</span>
+                        TikTok<span className="title-gradient">Bulk.com</span>
                     </h1>
                     <p className={styles.subtitle}>
                         Best online tool to save TikTok videos in Full HD. Fast, free, and unlimited.
@@ -86,6 +85,12 @@ export default function Hero() {
                                 {loading ? <Loader2 className={styles.spin} size={20} /> : <ArrowRight size={20} />}
                                 <span>{loading ? 'Processing...' : 'Download'}</span>
                             </button>
+                        </div>
+                        <div className={styles.formActions}>
+                            <a href="#bulk" className={styles.bulkBtnInline}>
+                                <Layers size={18} />
+                                <span>Bulk Download</span>
+                            </a>
                         </div>
                         {error && <p className={styles.errorMsg}>{error}</p>}
                     </form>
