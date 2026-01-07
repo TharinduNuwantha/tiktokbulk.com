@@ -95,6 +95,18 @@ export default function Hero() {
                         <div className={styles.trustItem}><CheckCircle2 size={16} /> Watermark Free</div>
                         <div className={styles.trustItem}><CheckCircle2 size={16} /> Unlimited Space</div>
                     </div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1 }}
+                        className={styles.bulkPromo}
+                    >
+                        <p>Need to download multiple videos?</p>
+                        <a href="#bulk" className={styles.bulkLink}>
+                            Try Bulk Downloader <span>✨</span>
+                        </a>
+                    </motion.div>
                 </motion.div>
 
                 <AnimatePresence mode="wait">
