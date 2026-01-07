@@ -3,7 +3,14 @@ import { getVideoInfo } from '@/lib/tiktok';
 
 export async function POST(req: NextRequest) {
     try {
-        const { url } = await req.json();
+        let body;
+        try {
+            body = await req.json();
+        } catch (e) {
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+        }
+
+        const { url } = body;
 
         if (!url) {
             return NextResponse.json({ error: 'URL is required' }, { status: 400 });

@@ -51,9 +51,13 @@ export default function BulkDownloader() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url: validLinks[i] }),
                 });
-                const data = await res.json();
 
-                if (data.error) throw new Error(data.error);
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({ error: 'Server error' }));
+                    throw new Error(errData.error || `Error ${res.status}`);
+                }
+
+                const data = await res.json();
 
                 setResults(prev => prev.map((res, idx) => idx === i ? {
                     ...res,
