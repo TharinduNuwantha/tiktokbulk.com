@@ -2,6 +2,12 @@ import React from 'react';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import styles from './legal.module.css';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Privacy Policy | TikTokBulk.com',
+    description: 'Learn about how TikTokBulk.com protects your privacy and handles data.',
+};
 
 export default function PrivacyPage() {
     return (

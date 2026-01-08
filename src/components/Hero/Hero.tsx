@@ -144,7 +144,7 @@ export default function Hero() {
                             exit={{ opacity: 0, scale: 0.9, y: 30 }}
                             className={styles.resultCard}
                         >
-                            <img src={videoData.thumbnail} alt="preview" className={styles.preview} />
+                            <img src={videoData.thumbnail} alt={`TikTok video preview: ${videoData.title}`} className={styles.preview} />
                             <div className={styles.resultInfo}>
                                 <h3 className={styles.videoTitle}>{videoData.title}</h3>
                                 <p className={styles.author}>by @{videoData.author}</p>

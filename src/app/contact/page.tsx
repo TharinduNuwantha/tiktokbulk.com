@@ -3,6 +3,12 @@ import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import styles from './contact.module.css';
 import { Mail, Phone, MapPin, Github, Linkedin, ExternalLink } from 'lucide-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Contact Us | TikTokBulk.com - Tharindu Nuwantha',
+    description: 'Get in touch with the developer of TikTokBulk.com for feedback, support, or collaboration.',
+};
 
 export default function ContactPage() {
     return (

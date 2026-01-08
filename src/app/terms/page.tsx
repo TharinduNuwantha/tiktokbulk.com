@@ -2,6 +2,12 @@ import React from 'react';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import styles from './legal.module.css';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Terms of Service | TikTokBulk.com',
+    description: 'Read the terms and conditions for using TikTokBulk.com services.',
+};
 
 export default function TermsPage() {
     return (
