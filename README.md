@@ -67,6 +67,10 @@ TikTokBulk.com is a state-of-the-art web application designed for creators and m
 
 We do not store any downloaded videos on our servers. All processing is done via stream-through proxy or directly on the client-side to ensure maximum privacy for our users.
 
+## 👨‍💻 About the Developer
+
+![About Me](src/readMe-img/about%20me.png)
+
 ---
 
 Built with ❤️ by [Tharindu Nuwantha](https://github.com/TharinduNuwantha)

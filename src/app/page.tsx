@@ -1,6 +1,7 @@
 import Header from '@/components/Header/Header';
 import Hero from '@/components/Hero/Hero';
 import BulkDownloader from '@/components/BulkDownloader/BulkDownloader';
+import Footer from '@/components/Footer/Footer';
 import styles from './page.module.css';
 import { Shield, Zap, Globe, Smartphone } from 'lucide-react';
 
@@ -93,16 +94,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <footer className={styles.footer}>
-                <div className={styles.container}>
-                    <p>© 2026 TikTokBulk Downloader. All rights reserved.</p>
-                    <div className={styles.footerLinks}>
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
-                        <a href="#">Contact</a>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </main>
     );
 }
