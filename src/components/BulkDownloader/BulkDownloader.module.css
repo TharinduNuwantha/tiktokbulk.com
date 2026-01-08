@@ -193,10 +193,52 @@
     max-width: 80%;
 }
 
+.errorContainer {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .errorText {
-    color: var(--primary);
+    color: #FF4D4D;
     font-size: 0.75rem;
     font-weight: 600;
+}
+
+.downloadOptions {
+    margin: 20px 0;
+}
+
+.optionSelector {
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 500px) {
+    .optionSelector {
+        flex-direction: column;
+    }
+}
+
+.optionBtn {
+    flex: 1;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.activeOption {
+    border-color: var(--secondary);
+    background: rgba(37, 244, 238, 0.1);
+    color: var(--secondary);
 }
 
 .downloadAllBtn {
@@ -211,6 +253,17 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    transition: all 0.2s;
+}
+
+.downloadAllBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.downloadAllBtn:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(254, 44, 85, 0.3);
 }
 
 .spin {

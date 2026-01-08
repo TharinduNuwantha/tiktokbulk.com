@@ -2,21 +2,26 @@
 
 import React, { useState } from 'react';
 import styles from './BulkDownloader.module.css';
-import { Layers, Play, Trash2, Plus, Loader2, Download, CheckCircle } from 'lucide-react';
+import { Layers, Play, Trash2, Plus, Loader2, Download, CheckCircle, FileArchive, FileVideo, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 interface DownloadResult {
     id: string;
     title: string;
     url: string;
     status: 'pending' | 'processing' | 'completed' | 'error';
+    error?: string;
 }
 
 export default function BulkDownloader() {
     const [links, setLinks] = useState<string[]>(['']);
     const [results, setResults] = useState<DownloadResult[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [downloadOption, setDownloadOption] = useState<'zip' | 'individual'>('zip');
 
     const addLink = () => setLinks([...links, '']);
     const updateLink = (index: number, val: string) => {
@@ -65,8 +70,13 @@ export default function BulkDownloader() {
                     title: data.title,
                     url: data.videoUrl
                 } : res));
-            } catch (err) {
-                setResults(prev => prev.map((res, idx) => idx === i ? { ...res, status: 'error' } : res));
+            } catch (err: any) {
+                console.error('Bulk error:', err);
+                setResults(prev => prev.map((res, idx) => idx === i ? {
+                    ...res,
+                    status: 'error',
+                    error: err.message || 'Private video or connection error'
+                } : res));
             }
 
             setProgress(Math.round(((i + 1) / validLinks.length) * 100));
@@ -75,12 +85,68 @@ export default function BulkDownloader() {
         setIsProcessing(false);
     };
 
-    const downloadAll = () => {
-        results.forEach(res => {
-            if (res.status === 'completed' && res.url) {
+    const downloadAsZip = async () => {
+        const completedResults = results.filter(res => res.status === 'completed' && res.url);
+        if (completedResults.length === 0) return;
+
+        setIsDownloading(true);
+        const zip = new JSZip();
+
+        try {
+            const downloadPromises = completedResults.map(async (res, index) => {
+                try {
+                    // Using a proxy to bypass CORS
+                    const response = await fetch(`/api/proxy?url=${encodeURIComponent(res.url)}`);
+                    const blob = await response.blob();
+                    const fileName = `${res.title.replace(/[^\w\s]/gi, '').substring(0, 50) || 'video'}_${index}.mp4`;
+                    zip.file(fileName, blob);
+                } catch (e) {
+                    console.error("Failed to fetch video for zip:", res.url, e);
+                }
+            });
+
+            await Promise.all(downloadPromises);
+            const content = await zip.generateAsync({ type: 'blob' });
+            saveAs(content, `tiktok_bulk_downloads_${Date.now()}.zip`);
+        } catch (error) {
+            console.error("Zip error:", error);
+            alert("Failed to create ZIP file. Some videos may have restricted access.");
+        } finally {
+            setIsDownloading(false);
+        }
+    };
+
+    const downloadIndividually = async () => {
+        const completedResults = results.filter(res => res.status === 'completed' && res.url);
+        if (completedResults.length === 0) return;
+
+        setIsDownloading(true);
+
+        for (const res of completedResults) {
+            try {
+                // Using a proxy to bypass CORS
+                const response = await fetch(`/api/proxy?url=${encodeURIComponent(res.url)}`);
+                const blob = await response.blob();
+                const fileName = `${res.title.replace(/[^\w\s]/gi, '').substring(0, 50) || 'video'}.mp4`;
+                saveAs(blob, fileName);
+                // Small delay to prevent browser issues
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } catch (e) {
+                console.error("Failed to download video:", res.url, e);
+                // Fallback to window.open if blob fetch fails
                 window.open(res.url, '_blank');
             }
-        });
+        }
+
+        setIsDownloading(false);
+    };
+
+    const handleDownloadAll = () => {
+        if (downloadOption === 'zip') {
+            downloadAsZip();
+        } else {
+            downloadIndividually();
+        }
     };
 
     return (
@@ -150,15 +216,50 @@ export default function BulkDownloader() {
                                         <div className={styles.resStatus}>
                                             {res.status === 'processing' && <Loader2 size={16} className={styles.spin} />}
                                             {res.status === 'completed' && <CheckCircle size={16} color="#25F4EE" />}
-                                            {res.status === 'error' && <span className={styles.errorText}>Failed</span>}
+                                            {res.status === 'error' && (
+                                                <div className={styles.errorContainer}>
+                                                    <AlertCircle size={16} color="#FF4D4D" />
+                                                    <span className={styles.errorText} title={res.error}>Private Video/Error</span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
+                            <div className={styles.downloadOptions}>
+                                <div className={styles.optionSelector}>
+                                    <button
+                                        className={`${styles.optionBtn} ${downloadOption === 'zip' ? styles.activeOption : ''}`}
+                                        onClick={() => setDownloadOption('zip')}
+                                    >
+                                        <FileArchive size={16} /> ZIP File
+                                    </button>
+                                    <button
+                                        className={`${styles.optionBtn} ${downloadOption === 'individual' ? styles.activeOption : ''}`}
+                                        onClick={() => setDownloadOption('individual')}
+                                    >
+                                        <FileVideo size={16} /> Individual
+                                    </button>
+                                </div>
+                            </div>
+
                             {progress === 100 && (
-                                <button onClick={downloadAll} className={styles.downloadAllBtn}>
-                                    <Download size={18} /> Download All Completed
+                                <button
+                                    onClick={handleDownloadAll}
+                                    className={styles.downloadAllBtn}
+                                    disabled={isDownloading || results.filter(r => r.status === 'completed').length === 0}
+                                >
+                                    {isDownloading ? (
+                                        <Loader2 size={18} className={styles.spin} />
+                                    ) : (
+                                        <Download size={18} />
+                                    )}
+                                    <span>
+                                        {isDownloading
+                                            ? (downloadOption === 'zip' ? 'Preparing ZIP...' : 'Downloading...')
+                                            : `Download All (${downloadOption === 'zip' ? '.zip' : 'Videos'})`}
+                                    </span>
                                 </button>
                             )}
                         </div>

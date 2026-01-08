@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './Hero.module.css';
 import { Link2, ArrowRight, Loader2, CheckCircle2, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +10,14 @@ export default function Hero() {
     const [loading, setLoading] = useState(false);
     const [videoData, setVideoData] = useState<any>(null);
     const [error, setError] = useState('');
+    const resultRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll when video data is ready
+    useEffect(() => {
+        if (videoData && resultRef.current) {
+            resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [videoData]);
 
     const handleDownload = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -17,7 +25,6 @@ export default function Hero() {
 
         setLoading(true);
         setError('');
-        // setVideoData(null); // Keep old data until new one is ready or just clear it
 
         try {
             const res = await fetch('/api/download', {
@@ -39,17 +46,30 @@ export default function Hero() {
 
     const downloadFile = async (fileUrl: string, fileName: string) => {
         try {
-            // Create a link and click it - simpler for external URLs that might not support CORS
-            // For real blob download, we need the file served with CORS headers or proxy it
+            // Force download in same tab using Blob approach
+            // This works if CORS is enabled on the mirror/CDN
+            const response = await fetch(fileUrl);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+
+            // Cleanup
+            window.URL.revokeObjectURL(blobUrl);
+            document.body.removeChild(a);
+        } catch (err) {
+            // Fallback: Just open the link if blob fails (CORS issues)
+            // We use target="_self" or just no target to stay in tab
             const a = document.createElement('a');
             a.href = fileUrl;
             a.download = fileName;
-            a.target = '_blank';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-        } catch (err) {
-            window.open(fileUrl, '_blank');
         }
     };
 
@@ -117,6 +137,7 @@ export default function Hero() {
                 <AnimatePresence mode="wait">
                     {videoData && (
                         <motion.div
+                            ref={resultRef}
                             key={videoData.id}
                             initial={{ opacity: 0, scale: 0.9, y: 30 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -129,14 +150,14 @@ export default function Hero() {
                                 <p className={styles.author}>by @{videoData.author}</p>
                                 <div className={styles.downloadOptions}>
                                     <button
-                                        onClick={() => downloadFile(videoData.videoUrl, `tikflow_${videoData.id}.mp4`)}
+                                        onClick={() => downloadFile(videoData.videoUrl, `tiktokbulk_${videoData.id}.mp4`)}
                                         className={styles.downloadAction}
                                     >
                                         Download MP4 (No Watermark)
                                     </button>
                                     {videoData.musicUrl && (
                                         <button
-                                            onClick={() => downloadFile(videoData.musicUrl, `tikflow_audio_${videoData.id}.mp3`)}
+                                            onClick={() => downloadFile(videoData.musicUrl, `tiktokbulk_audio_${videoData.id}.mp3`)}
                                             className={styles.downloadActionSecondary}
                                         >
                                             Download Music (MP3)
